@@ -37,12 +37,14 @@
 #include <QUrlQuery>
 
 Session::Session(QWidget *pParent, const QString &sInyokaUrl,
-                 const QString &sHash, QObject *pObj)
+                 const QString &sHash, const QString &sInyokaUser, const QByteArray &sInyokaPW, QObject *pObj)
   : m_pParent(pParent),
     m_sInyokaUrl(sInyokaUrl),
     m_State(REQUTOKEN),
     m_sToken(QLatin1String("")),
-    m_sHash(sHash) {
+    m_sHash(sHash),
+    m_sInyokaUser(sInyokaUser),
+    m_aInyokaUserPW(sInyokaPW) {
   Q_UNUSED(pObj)
   m_pNwManager = new QNetworkAccessManager(m_pParent);
   m_pNwManager->setCookieJar(this);
@@ -165,21 +167,30 @@ void Session::requestLogin() {
   QString sUsername(QLatin1String(""));
   QString sPassword(QLatin1String(""));
 
-  sUsername = QInputDialog::getText(
-                m_pParent, tr("Login user"),
-                tr("Please insert your Inyoka user name:"),
-                QLineEdit::Normal, QLatin1String(""), &bOk).trimmed();
-  if (!bOk || sUsername.isEmpty()) {
-    return;
-  }
 
-  sPassword = QInputDialog::getText(
-                m_pParent, tr("Login password"),
-                tr("Please insert your Inyoka password:"),
-                QLineEdit::Password, QLatin1String(""), &bOk).trimmed();
-  if (!bOk || sPassword.isEmpty()) {
-    return;
+  if( m_sInyokaUser.isEmpty() ) {
+    sUsername = QInputDialog::getText(
+                  m_pParent, tr("Login user"),
+                  tr("Please insert your Inyoka user name:"),
+                  QLineEdit::Normal, QLatin1String(""), &bOk).trimmed();
+    if (!bOk || sUsername.isEmpty()) {
+      return;
+    }
   }
+  else
+      sUsername = m_sInyokaUser;
+
+  if( m_aInyokaUserPW.isEmpty() ) {
+    sPassword = QInputDialog::getText(
+                  m_pParent, tr("Login password"),
+                  tr("Please insert your Inyoka password:"),
+                  QLineEdit::Password, QLatin1String(""), &bOk).trimmed();
+    if (!bOk || sPassword.isEmpty()) {
+      return;
+    }
+  }
+  else
+      sPassword = decryptPassword(m_aInyokaUserPW);
 
   sUrl = sUrl.remove(QStringLiteral("wiki.")) + "/login/?next=" + m_sInyokaUrl;
 

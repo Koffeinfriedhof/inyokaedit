@@ -123,6 +123,13 @@ SettingsDialog::SettingsDialog(Settings *pSettings,
   m_pSettings->m_sInyokaCommunity = m_pUi->CommunityCombo->currentText();
   m_pUi->CommunityCombo->blockSignals(false);
 
+  // User credentials
+  m_pUi->inyokaUserEdit->setText(m_pSettings->m_sInyokaUser);
+  m_pUi->inyokaUserPWEdit->setText(QString());
+  if( ! m_pSettings->m_aInyokaUserPassword.isEmpty() )
+      m_pUi->inyokaUserPWEdit->setPlaceholderText(
+                  "Your password is already stored. Use this field to overwrite");
+
   // Proxy
   m_pUi->proxyHostNameEdit->setText(m_pSettings->m_sProxyHostName);
   m_pUi->proxyPortSpinBox->setValue(m_pSettings->m_nProxyPort);
@@ -178,6 +185,11 @@ void SettingsDialog::accept() {
   m_pSettings->m_nFontsize = m_pUi->fontSizeEdit->value();
   m_pSettings->m_EditorFont.setFamily(m_pSettings->m_sFontFamily);
   m_pSettings->m_EditorFont.setPointSizeF(m_pSettings->m_nFontsize);
+
+  // user credentials
+  m_pSettings->m_sInyokaUser = m_pUi->inyokaUserEdit->text();
+  if( ! m_pUi->inyokaUserPWEdit->text().isEmpty() )
+      m_pSettings->m_aInyokaUserPassword = encryptPassword(m_pUi->inyokaUserPWEdit->text());
 
   // Recent files
   m_pSettings->m_nMaxLastOpenedFiles = m_pUi->numberRecentFilesEdit->value();

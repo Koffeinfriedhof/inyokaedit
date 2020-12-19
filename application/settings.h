@@ -62,6 +62,8 @@ class Settings : public QObject {
     auto getInyokaUrl() const-> QString;
     auto getInyokaCommunity() const-> QString;
     auto getInyokaConstructionArea() const-> QString;
+    auto getInyokaUser() const-> QString;
+    auto getInyokaUserPassword() const-> QByteArray;
     auto getInyokaHash() const-> QString;
     auto getAutomaticImageDownload() const -> bool;
     auto getPreviewHorizontal() const -> bool;
@@ -127,6 +129,11 @@ class Settings : public QObject {
     QString m_sInyokaUrl;     // Url to inyoka
     QString m_sInyokaConstArea;
     QString m_sInyokaHash;
+
+    // user credentials
+    QString m_sInyokaUser;
+    QByteArray m_aInyokaUserPassword;  // TODO: use encrypted hash
+
     QDir m_LastOpenedDir;
     bool m_bAutomaticImageDownload{};  // Enable/disable download article images
     bool m_bCheckLinks{};

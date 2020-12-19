@@ -68,6 +68,12 @@ class SettingsDialog : public QDialog {
  private:
     auto searchTranslations() -> QStringList;
 
+    // TODO: ENCRYPTION
+    QByteArray encryptPassword(const QString &pw) {
+        QByteArray enc = "encrypted:";
+        return enc.append( pw.toLatin1() );
+    }
+
     Ui::SettingsDialog *m_pUi;
     Settings *m_pSettings;
     const QString m_sSharePath;

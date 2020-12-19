@@ -42,7 +42,7 @@ class Session : public QNetworkCookieJar {
 
  public:
     explicit Session(QWidget *pParent, const QString &sInyokaUrl,
-                     const QString &sHash, QObject *pObj = nullptr);
+                     const QString &sHash, const QString &sInyokaUser = QString(), const QByteArray &sInyokaPW = QByteArray(), QObject *pObj = nullptr);
 
     void checkSession();
     auto isLoggedIn() const -> bool;
@@ -66,6 +66,12 @@ class Session : public QNetworkCookieJar {
     QString m_sHash;
     QNetworkCookie m_SessionCookie;
     QList<QNetworkCookie> m_ListCookies;
+
+    QString decryptPassword(QByteArray &pw) {
+        pw.remove(0,10);
+        return QString(pw); }  // TODO: decrypt ;)
+    QString m_sInyokaUser;
+    QByteArray m_aInyokaUserPW;
 };
 
 #endif  // APPLICATION_SESSION_H_

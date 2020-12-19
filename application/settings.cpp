@@ -132,6 +132,12 @@ void Settings::readSettings(const QString &sSharePath) {
     }
   }
 
+  // user credentials
+  m_sInyokaUser = m_pSettings->value(
+                    QStringLiteral("InyokaUser"), "").toString();
+  m_aInyokaUserPassword = m_pSettings->value(
+                    QStringLiteral("InyokaUserPassword"), "").toByteArray();
+
   QStringList sListPaths = QStandardPaths::standardLocations(
                              QStandardPaths::DocumentsLocation);
   if (sListPaths.isEmpty()) {
@@ -255,6 +261,8 @@ void Settings::writeSettings(const QByteArray &WinGeometry,
                         m_bPreviewSplitHorizontal);
   m_pSettings->setValue(QStringLiteral("InyokaCommunity"), m_sInyokaCommunity);
   m_pSettings->setValue(QStringLiteral("InyokaUrl"), m_sInyokaUrl);
+  m_pSettings->setValue(QStringLiteral("InyokaUser"), m_sInyokaUser);
+  m_pSettings->setValue(QStringLiteral("InyokaUserPassword"), m_aInyokaUserPassword);
   m_pSettings->setValue(QStringLiteral("ConstructionArea"), m_sInyokaConstArea);
   m_pSettings->setValue(QStringLiteral("Hash"), m_sInyokaHash);
   m_pSettings->setValue(QStringLiteral("LastOpenedDir"),
@@ -376,6 +384,14 @@ auto Settings::getInyokaConstructionArea() const -> QString {
 auto Settings::getInyokaHash() const -> QString {
   return m_sInyokaHash;
 }
+
+auto Settings::getInyokaUser() const -> QString {
+  return m_sInyokaUser;
+}
+auto Settings::getInyokaUserPassword() const -> QByteArray {
+  return m_aInyokaUserPassword;
+}
+
 
 auto Settings::getCodeCompletion() const -> bool {
   return m_bCodeCompletion;
